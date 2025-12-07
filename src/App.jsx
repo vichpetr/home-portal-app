@@ -32,12 +32,15 @@ const Layout = () => {
   )
 }
 
-const Home = () => (
-  <div style={{ padding: '2rem', textAlign: 'center' }}>
-    <h2>Vítejte v klientském portálu</h2>
-    <p>Zde můžete spravovat své nemovitosti a generovat smlouvy.</p>
-  </div>
-)
+// Wrapper to pass auth context to remote app
+const GeneratorWrapper = () => {
+  const { user } = useAuth()
+  return (
+    <Suspense fallback={<div className="loading">Načítání generátoru...</div>}>
+      <RentalGeneratorApp user={user} />
+    </Suspense>
+  )
+}
 
 function App() {
   return (
@@ -51,11 +54,7 @@ function App() {
             <Route path="/app" element={<Layout />}>
               <Route index element={<Home />} />
               <Route element={<ProtectedRoute requiredRole="generator_user" />}>
-                <Route path="generator" element={
-                  <Suspense fallback={<div className="loading">Načítání generátoru...</div>}>
-                    <RentalGeneratorApp user={user} />
-                  </Suspense>
-                } />
+                <Route path="generator" element={<GeneratorWrapper />} />
               </Route>
             </Route>
 
