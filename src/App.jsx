@@ -10,14 +10,14 @@ import './index.css'
 const RentalGeneratorApp = React.lazy(() => import('rentalGenerator/App'))
 
 const Layout = () => {
-  const { signOut, user, isAdmin } = useAuth()
+  const { signOut, user, hasRole, isAdmin } = useAuth()
   return (
     <div className="layout">
       <nav style={{ padding: '1rem', background: '#f8f9fa', borderBottom: '1px solid #e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <h1 style={{ margin: 0, fontSize: '1.2rem' }}>Můj Portál</h1>
           <Link to="/app">Domů</Link>
-          <Link to="/app/generator">Generátor Smluv</Link>
+          {hasRole('generator_user') && <Link to="/app/generator">Generátor Smluv</Link>}
           {isAdmin && <Link to="/admin" style={{ color: '#d6336c', fontWeight: 'bold' }}>Admin</Link>}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -50,11 +50,13 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/app" element={<Layout />}>
               <Route index element={<Home />} />
-              <Route path="generator" element={
-                <Suspense fallback={<div className="loading">Načítání generátoru...</div>}>
-                  <RentalGeneratorApp />
-                </Suspense>
-              } />
+              <Route element={<ProtectedRoute requiredRole="generator_user" />}>
+                <Route path="generator" element={
+                  <Suspense fallback={<div className="loading">Načítání generátoru...</div>}>
+                    <RentalGeneratorApp />
+                  </Suspense>
+                } />
+              </Route>
             </Route>
 
             {/* Admin Routes */}
