@@ -32,6 +32,13 @@ const Layout = () => {
   )
 }
 
+const Home = () => (
+  <div style={{ padding: '2rem', textAlign: 'center' }}>
+    <h2>Vítejte v klientském portálu</h2>
+    <p>Zde můžete spravovat své nemovitosti a generovat smlouvy.</p>
+  </div>
+)
+
 // Wrapper to pass auth context to remote app
 const GeneratorWrapper = () => {
   const { user } = useAuth()
