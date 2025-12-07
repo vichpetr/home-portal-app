@@ -11,23 +11,29 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        // Check if handling OAuth redirect
+        const isAuthRedirect = window.location.hash && window.location.hash.includes('access_token')
+
         // Check active session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null)
             if (session?.user) {
                 fetchUserRoles(session.user.id)
-            } else {
+            } else if (!isAuthRedirect) {
+                // Only stop loading if we are NOT waiting for an auth redirect
                 setLoading(false)
             }
         })
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            console.log('Auth state change:', _event, session)
             setUser(session?.user ?? null)
             if (session?.user) {
                 fetchUserRoles(session.user.id)
             } else {
                 setRoles([])
+                // If we were waiting for redirect and it failed or finished without session (SIGNED_OUT)
                 setLoading(false)
             }
         })
