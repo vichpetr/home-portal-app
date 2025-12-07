@@ -53,7 +53,7 @@ function App() {
               <Route element={<ProtectedRoute requiredRole="generator_user" />}>
                 <Route path="generator" element={
                   <Suspense fallback={<div className="loading">Načítání generátoru...</div>}>
-                    <RentalGeneratorApp />
+                    <RentalGeneratorApp user={user} />
                   </Suspense>
                 } />
               </Route>
