@@ -41,10 +41,10 @@ const Home = () => (
 
 // Wrapper to pass auth context to remote app
 const GeneratorWrapper = () => {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   return (
     <Suspense fallback={<div className="loading">Načítání generátoru...</div>}>
-      <RentalGeneratorApp user={user} />
+      <RentalGeneratorApp user={user} session={session} />
     </Suspense>
   )
 }
@@ -61,7 +61,7 @@ function App() {
             <Route path="/app" element={<Layout />}>
               <Route index element={<Home />} />
               <Route element={<ProtectedRoute requiredRole="generator_user" />}>
-                <Route path="generator" element={<GeneratorWrapper />} />
+                <Route path="generator/*" element={<GeneratorWrapper />} />
               </Route>
             </Route>
 

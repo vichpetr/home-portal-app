@@ -7,6 +7,7 @@ export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
+    const [session, setSession] = useState(null)
     const [roles, setRoles] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
 
         // Check active session
         supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
             setUser(session?.user ?? null)
             if (session?.user) {
                 fetchUserRoles(session.user.id)
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }) => {
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             console.log('Auth state change:', _event, session)
+            setSession(session)
             setUser(session?.user ?? null)
             if (session?.user) {
                 fetchUserRoles(session.user.id)
@@ -90,6 +93,7 @@ export const AuthProvider = ({ children }) => {
 
     const value = {
         user,
+        session,
         roles,
         loading,
         loginWithGoogle,
