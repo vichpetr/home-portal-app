@@ -13,7 +13,11 @@ export default defineConfig(({ mode }) => {
         remotes: {
           rentalGenerator: env.VITE_RENTAL_GENERATOR_URL || 'http://localhost:5001/assets/remoteEntry.js',
         },
-        shared: ['react', 'react-dom']
+        shared: {
+          react: { singleton: true },
+          'react-dom': { singleton: true },
+          'react-router-dom': { singleton: true }
+        }
       })
     ],
     build: {
